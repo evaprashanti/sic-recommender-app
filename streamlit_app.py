@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import joblib
 import requests
-import gzip
 import os
 
 st.title("💡 Sistem Rekomendasi Produk E-Commerce (SIC)")
@@ -11,15 +10,14 @@ st.write("Aplikasi ini menampilkan rekomendasi produk mirip berdasarkan kemiripa
 # 🔹 URL file model dari Google Drive
 url = "https://drive.google.com/uc?export=download&id=1VLiZOTkp9GvQzXVyExIP4EK7FUCyXop-"
 
-# 🔹 Unduh model hanya jika belum ada di folder
-model_path = "recommender_model_compressed.joblib"
+# 🔹 Unduh model hanya jika belum ada
+model_path = "recommender_model.joblib"
 if not os.path.exists(model_path):
     with st.spinner("Mengunduh model dari Google Drive..."):
         r = requests.get(url)
         with open(model_path, "wb") as f:
             f.write(r.content)
         st.success("Model berhasil diunduh!")
-
 
 # 🔹 Load model rekomendasi (tanpa gzip)
 model = joblib.load(model_path)
@@ -43,4 +41,5 @@ if st.button("Tampilkan Rekomendasi"):
     hasil = rekomendasi_produk(selected_product, model)
     st.subheader(f"Rekomendasi produk mirip dengan **{selected_product}**:")
     st.table(hasil)
+
 
